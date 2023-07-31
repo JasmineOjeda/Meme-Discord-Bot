@@ -3,7 +3,7 @@ import time
 import nest_asyncio
 
 # - - - - - Variables - - - - -
-TOKEN = 'MTEzNTI4MDAyOTg2NjEzOTcwOQ.GLdnme.rRg8Z6O_2uMSrPFoV8IuVOk_uQjoDF3xbhJlPE'
+TOKEN = 'xxx'
 CRAZY = ['Crazy?',
             'I was crazy once',
             'They locked me in a room',
