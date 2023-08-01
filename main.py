@@ -1,16 +1,8 @@
 import discord
+import random
 import time
+import re
 import nest_asyncio
-
-# - - - - - Variables - - - - -
-TOKEN = 'xxx'
-CRAZY = ['Crazy?',
-            'I was crazy once',
-            'They locked me in a room',
-            'A rubber room',
-            'A rubber room with rats',
-            'And rats make me crazy']
-CRAZY_WAS_SENT = False
 
 # - - - - - Setup - - - - -
 nest_asyncio.apply()
@@ -20,6 +12,41 @@ intents.message_content = True
 
 client = discord.Client(intents=intents)
 
+# - - - - - Variables and Functions - - - - -
+TOKEN = 'xxx'
+CRAZY = ['Crazy?',
+            'I was crazy once',
+            'They locked me in a room',
+            'A rubber room',
+            'A rubber room with rats',
+            'And rats make me crazy']
+CRAZY_WAS_SENT = False
+
+def meow_variations():
+    choice = random.choice([1, 1, 2, 2, 3])
+    
+    if (choice == 1):
+        return random.choice(["MEOW", "meow", "MEOW", "meow", "*miau*"])
+    if (choice == 2):
+        R = ("r" * random.randint(0, 3)) 
+        E = ("e" * random.randint(0, 3))
+        O = (random.choice(["o", "o", "ow"]) * random.randint(1, 5))
+        W =("w" * random.randint(1, 5))
+        meow_variate = "m" + R + E + O + W
+        
+        if (random.randint(1, 2) == 1):
+            meow_variate.upper()
+        return meow_variate
+    if (choice == 3):
+        bark_variate = ""
+        repeat = random.randint(1, 15)
+        
+        while (repeat > 0):
+            repeat-=1
+            bark_variate = bark_variate + random.choice(["BARK ", "WOOF "])
+        
+        return bark_variate
+    
 # - - - - - Functionality - - - - -
 @client.event
 async def on_ready():
@@ -58,6 +85,12 @@ async def on_message(message):
     if (message.content.casefold().find('stop') != -1):
         CRAZY_WAS_SENT = False
         LOOP = False
+        
+    if (re.search("m[mraeiouw\s]+w", message.content.casefold())):
+        await message.channel.send(meow_variations())
+        
+    if (message.content.casefold().find('treat') != -1):
+        await message.channel.send('TREAT??')
     
     # Messages the "Mets" meme when a message sent with "mets" or "met" is sent
     if (message.content.casefold().find('mets') != -1) or (message.content.casefold().find('met') != -1):
@@ -66,9 +99,6 @@ async def on_message(message):
     # Messages the "Nortiplier" meme when a message sent with "Nortiplier" is sent
     if (message.content.casefold().find('nortiplier') != -1):
         await message.channel.send('Hello everybody, my name is Nortiplier and welcome to Identity V, a 1v4 asymmetrical horror game that you guys suggested, in mass, and I saw that empilydyerz played it and said it was really good… So I’m very eager to see what is up.')
-        
-    if (message.content.casefold().find('treat') != -1):
-        await message.channel.send('TREAT??')
         
     if (message.content.find('69') != -1):
         await message.channel.send('Nice')
@@ -81,9 +111,6 @@ async def on_message(message):
         
     if (message.content.casefold().find('are you okay') != -1) or (message.content.casefold().find('are you ok') != -1):
         await message.channel.send('No, I\'m gonna puke Diane.')
-        
-    if (message.content.casefold().find('meow') != -1):
-        await message.channel.send('MEOW')
         
     if (message.content.casefold().find('pee') != -1):
         await message.channel.send('PISS CHAMBER, NOW')
