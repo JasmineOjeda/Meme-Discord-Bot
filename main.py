@@ -15,22 +15,12 @@ client = discord.Client(intents=intents)
 # - - - - - Variables and Functions - - - - -
 TOKEN = 'xxx'
 CRAZY = ['Crazy?',
-         'I was crazy once',
-         'They locked me in a room',
-         'A rubber room',
-         'A rubber room with rats',
-         'And rats make me crazy']
-TREAT = ['. . .',
-         'Treat??',
-         ':( ?',
-         '. . . treat?',
-         'Treeeeaaatttt']
+            'I was crazy once',
+            'They locked me in a room',
+            'A rubber room',
+            'A rubber room with rats',
+            'And rats make me crazy']
 CRAZY_WAS_SENT = False
-CRAZY_CHANNEL = ""
-TREAT_WAS_SENT = False
-TREAT_CHANNEL = ""
-#NO_TREAT_WAS_SENT = False
-#NO_TREAT_COUNT = 0
 
 def meow_variations():
     choice = random.choice([1, 1, 2, 2, 3])
@@ -48,24 +38,19 @@ def meow_variations():
             meow_variate.upper()
         return meow_variate
     if (choice == 3):
-        return bark_variations()
-    
-def bark_variations():
-    bark_variate = ""
-    repeat = random.randint(1, 15)
-    while (repeat > 0):
-        repeat-=1
-        bark_variate = bark_variate + random.choice(["BARK ", "WOOF ", "BARK ", "WOOF ", ("R" * random.randint(5, 15)) + " "])
-    return bark_variate
+        bark_variate = ""
+        repeat = random.randint(1, 15)
+        
+        while (repeat > 0):
+            repeat-=1
+            bark_variate = bark_variate + random.choice(["BARK ", "WOOF "])
+        
+        return bark_variate
     
 # - - - - - Functionality - - - - -
 @client.event
 async def on_ready():
     print('We have logged IN as {0.user}'.format(client))
-    #text_channel_list = []
-    #for guild in client.guilds:
-    #    for channel in client.channels:
-    #        text_channel_list.append(channel)
 
 @client.event
 async def on_message(message):
@@ -80,15 +65,14 @@ async def on_message(message):
     
     # Loops the "Crazy?" meme whenever a message sent with "crazy" is sent
     if (message.content.casefold().find('crazy') != -1):
-        global CRAZY_WAS_SENT, CRAZY_CHANNEL
+        global CRAZY_WAS_SENT
         if not(CRAZY_WAS_SENT):
             i = 0
-            global CRAZY_LOOP
-            CRAZY_LOOP = True
+            global LOOP
+            LOOP = True
             CRAZY_WAS_SENT = True
-            CRAZY_CHANNEL = message.channel.id
 
-            while (CRAZY_LOOP):
+            while (LOOP):
                 await message.channel.send(CRAZY[i])
                 time.sleep(1)
 
@@ -97,53 +81,16 @@ async def on_message(message):
                 else:
                     i+=1
                     
-    # Stops the "Crazy?" meme loop when a message sent with "stop" is sent
-    if (message.content.casefold().find('stop') != -1) or (message.content.casefold().find('shut') != -1):
-        if (message.channel.id == CRAZY_CHANNEL):
-            CRAZY_WAS_SENT = False
-            CRAZY_LOOP = False
-                    
-    # Sends a "meow" or occasional "barking" when a "meow" is sent
+     # Stops the "Crazy?" meme loop when a message sent with "stop" is sent
+    if (message.content.casefold().find('stop') != -1):
+        CRAZY_WAS_SENT = False
+        LOOP = False
+        
     if (re.search("m[mraeiouw\s]+w", message.content.casefold())):
         await message.channel.send(meow_variations())
-    
-    # Sends "barking" when a "bark" is sent
-    if (message.content.casefold().find('bark') != -1) or (message.content.casefold().find('woof') != -1):
-        await message.channel.send(bark_variations())
-    
-    # "Treat" meme
-    global TREAT_WAS_SENT, TREAT_CHANNEL
-    if not(TREAT_WAS_SENT) and (message.content.casefold().find('treat') != -1):
+        
+    if (message.content.casefold().find('treat') != -1):
         await message.channel.send('TREAT??')
-        time.sleep(2)
-        if not(TREAT_WAS_SENT):
-            TREAT_WAS_SENT = True
-            TREAT_CHANNEL = message.channel.id
-            global TREAT_LOOP
-            TREAT_LOOP = True
-
-            while (TREAT_LOOP):
-                await message.channel.send(random.choice(TREAT))
-                time.sleep(random.randint(2, 5))
-                
-    # Stops the "Treat" meme
-    if (message.content.casefold().find('no treat') != -1):
-        if (message.channel.id == TREAT_CHANNEL):
-            TREAT_WAS_SENT = False
-            TREAT_LOOP = False
-            await message.channel.send("awwwwww...")
-        return
-                           
-    #    if not(TREAT_LOOP) and (NO_TREAT_WAS_SENT):
-    #        TREAT_WAS_SENT = False
-    #        NO_TREAT_WAS_SENT = False
-    #        await message.channel.send('awwwwwwww...')
-    #        return
-    #    if (TREAT_WAS_SENT) and (message.channel.id == TREAT_CHANNEL):
-    #        TREAT_LOOP = False
-    #        global NO_TREAT_WAS_SENT
-    #        NO_TREAT_WAS_SENT = True
-    #        await message.channel.send('TREAT??')
     
     # Messages the "Mets" meme when a message sent with "mets" or "met" is sent
     if (message.content.casefold().find('mets') != -1) or (message.content.casefold().find('met') != -1):
