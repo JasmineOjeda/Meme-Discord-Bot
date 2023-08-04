@@ -54,6 +54,9 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    async def FIGHT_SEQUENCE(message):
+        await message.channel.send("[INSERT RPG FIGHT SEQUENCE]")
+    
     if message.author == client.user:
         return
     
@@ -61,7 +64,17 @@ async def on_message(message):
     if message.content.startswith('?shutdown'):
         print('We have logged OUT as {0.user}'.format(client))
         await client.close()
-        exit();  
+        exit();
+        
+    if client.user.mentioned_in(message):
+        if (message.content.casefold().find('fight')):
+            await message.channel.send("Fight??")
+            time.sleep(2)
+            await message.channel.send("YA WANNA FIGHT BRO?? >:c")
+            time.sleep(1)
+            await FIGHT_SEQUENCE(message)
+        else:
+            await message.channel.send(random.choice(["joe mama", "deez nuts", "BEES??", "no"]))
     
     # Loops the "Crazy?" meme whenever a message sent with "crazy" is sent
     if (message.content.casefold().find('crazy') != -1):
@@ -89,6 +102,9 @@ async def on_message(message):
     if (re.search("m[mraeiouw\s]+w", message.content.casefold())):
         await message.channel.send(meow_variations())
         
+    if (re.search("[wyg][aeiou]+[aeiou]$", message.content.casefold())):
+        await message.channel.send(random.choice([message.content, "LES GOOOOOO", "YIPEEEEEE", "YAHOOOOOOOO", "noice"]))
+        
     if (message.content.casefold().find('treat') != -1):
         await message.channel.send('TREAT??')
     
@@ -103,7 +119,7 @@ async def on_message(message):
     if (message.content.find('69') != -1):
         await message.channel.send('Nice')
         
-    if (message.content.casefold().find('piss me off') != -1) or (message.content.casefold().find('anger') != -1) or (message.content.casefold().find('angry') != -1) or (message.content.casefold().find('mad') != -1) or (message.content.casefold().find('angy') != -1):
+    if (message.content.casefold().find('piss me off') != -1) or (message.content.casefold().find('anger') != -1) or (message.content.casefold().find('ang[r]*y') != -1) or (message.content.casefold().find('mad') != -1):
         await message.channel.send('Does it anger the beast in you, buddy?')
         
     if (message.content.casefold().find('shadow wizard money gang') != -1):
