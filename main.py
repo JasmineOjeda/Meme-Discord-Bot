@@ -38,19 +38,32 @@ def meow_variations():
             meow_variate.upper()
         return meow_variate
     if (choice == 3):
-        bark_variate = ""
-        repeat = random.randint(1, 15)
-        
-        while (repeat > 0):
-            repeat-=1
-            bark_variate = bark_variate + random.choice(["BARK ", "WOOF "])
-        
-        return bark_variate
+        return bark_variations()
+
+def bark_variations():
+    bark_variate = ""
+    repeat = random.randint(1, 15)
+    
+    while (repeat > 0):
+        repeat-=1
+        bark_variate = bark_variate + random.choice(["BARK ", "WOOF "])
+    
+    return bark_variate
+
+def cheer_variation():
+    vowels = random.randint(6, 12)
+    yahoo = "YAH" + ("O" * vowels)
+    yipee = "YIP" + ("E" * vowels)
+    yeah = "YEA" + ("A" * vowels) 
+    lets_go = "LE" + random.choice(["T", ""]) + "S G" + ("O" * vowels)
+    woo = "W" + ("O" * vowels)
+    return random.choice([yahoo, yipee, yeah, lets_go, woo, "noice", "cool"])
     
 # - - - - - Functionality - - - - -
 @client.event
 async def on_ready():
     print('We have logged IN as {0.user}'.format(client))
+    print(format(client.guilds))
 
 @client.event
 async def on_message(message):
@@ -60,21 +73,14 @@ async def on_message(message):
     if message.author == client.user:
         return
     
+    if random.randint(1, 500) == 1:
+        await message.channel.send("doo doooo da dee da-dumm")
+    
     # "?shutdown" command: Shuts down the bot
     if message.content.startswith('?shutdown'):
         print('We have logged OUT as {0.user}'.format(client))
         await client.close()
         exit();
-        
-    if client.user.mentioned_in(message):
-        if (message.content.casefold().find('fight')):
-            await message.channel.send("Fight??")
-            time.sleep(2)
-            await message.channel.send("YA WANNA FIGHT BRO?? >:c")
-            time.sleep(1)
-            await FIGHT_SEQUENCE(message)
-        else:
-            await message.channel.send(random.choice(["joe mama", "deez nuts", "BEES??", "no"]))
     
     # Loops the "Crazy?" meme whenever a message sent with "crazy" is sent
     if (message.content.casefold().find('crazy') != -1):
@@ -98,21 +104,26 @@ async def on_message(message):
     if (message.content.casefold().find('stop') != -1):
         CRAZY_WAS_SENT = False
         LOOP = False
-        
+
+    # Messages a "meow" when a message with a "meow" is sent
     if (re.search("m[mraeiouw\s]+w", message.content.casefold())):
         await message.channel.send(meow_variations())
-        
-    if (re.search("[wyg][aeiou]+[aeiou]$", message.content.casefold())):
-        await message.channel.send(random.choice([message.content, "LES GOOOOOO", "YIPEEEEEE", "YAHOOOOOOOO", "noice"]))
-        
+
+    # Messages a "bark" when a message with a "bark" is sent
+    if (message.content.casefold().find("bark") != -1) or (message.content.casefold().find("woof") != -1):
+        await message.channel.send(bark_variations())
+    
+    # Messages a "cheer" when a message with a "cheer" is sent
+    if (re.search("[wyg][aeiou][ph]*[aeiou]+[aeiou]*$", message.content.casefold())):
+        await message.channel.send(cheer_variation())
+    
+    # Random single responses
     if (message.content.casefold().find('treat') != -1):
         await message.channel.send('TREAT??')
-    
-    # Messages the "Mets" meme when a message sent with "mets" or "met" is sent
+
     if (message.content.casefold().find('mets') != -1) or (message.content.casefold().find('met') != -1):
         await message.channel.send('IT\'S ABOUT DA METS :clap: BABY! :clap: LOVE DA METS! :clap: LET\'S GO :clap::clap::clap: HIT A HOME RUN BABY! :clap: C\'MOH METS! :clap:')
         
-    # Messages the "Nortiplier" meme when a message sent with "Nortiplier" is sent
     if (message.content.casefold().find('nortiplier') != -1):
         await message.channel.send('Hello everybody, my name is Nortiplier and welcome to Identity V, a 1v4 asymmetrical horror game that you guys suggested, in mass, and I saw that empilydyerz played it and said it was really good… So I’m very eager to see what is up.')
         
@@ -128,7 +139,33 @@ async def on_message(message):
     if (message.content.casefold().find('are you okay') != -1) or (message.content.casefold().find('are you ok') != -1):
         await message.channel.send('No, I\'m gonna puke Diane.')
         
-    if (message.content.casefold().find('pee') != -1):
-        await message.channel.send('PISS CHAMBER, NOW')
+    if 'pee' in message.content.casefold().split():
+        if random.randint(1, 2) == 1:
+            await message.channel.send('PISS CHAMBER, NOW')
+        else:
+            await message.add_reaction("<:pee:1137204840934682704>")
+
+    # Responses for when the bot is mentioned
+    if client.user.mentioned_in(message):
+        if (message.content.casefold().find('fight') != -1):
+            await message.channel.send("Fight??")
+            time.sleep(2)
+            await message.channel.send("YA WANNA FIGHT BRO?? >:c")
+            time.sleep(1)
+            await FIGHT_SEQUENCE(message)
+        elif (message.content.casefold().find('dm') != -1):
+            await message.author.create_dm()
+            await message.author.dm_channel.send("Wassup?")
+        else:
+            await message.channel.send(random.choice(["joe mama", "deez nuts", "no"]))
+
+    # Testing dm functionality
+    if (message.content.casefold().find('deez nuts') != -1):
+        await message.author.create_dm()
+        await message.author.dm_channel.send("joe mama")
+    
+    if (message.content.casefold().find('joe mama') != -1) or (message.content.casefold().find('jo mama') != -1):
+        await message.author.create_dm()
+        await message.author.dm_channel.send("deez nuts")
         
 client.run(TOKEN)
